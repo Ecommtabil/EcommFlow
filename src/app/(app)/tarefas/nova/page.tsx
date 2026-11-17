@@ -20,7 +20,7 @@ export default async function Nova() {
         <div className="row">
           <div><label>Departamento *</label>
             <select name="departamento" required defaultValue=""><option value="" disabled>Selecione…</option>
-              {deps.map((d) => <option key={d.id} value={d.id}>{d.nome}{d.restrito_gestor ? ' (gestores)' : ''}</option>)}</select></div>
+              {deps.map((d) => <option key={d.id} value={d.id}>{d.nome}{d.restrito_gestor ? ' (Financeiro)' : ''}</option>)}</select></div>
           <div><label>Atribuir para *</label>
             <select name="responsavel" required defaultValue={s.id}>
               {['gestor', 'operador'].map((p) => (

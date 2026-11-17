@@ -13,10 +13,12 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "db:setup": "tsx scripts/db-setup.ts",
+    "db:migrar": "tsx scripts/db-migrar.ts",
     "senha": "tsx scripts/senha.ts",
     "cron": "tsx scripts/cron.ts"
   },
   "dependencies": {
+    "exceljs": "^4.4.0",
     "jose": "5.9.6",
     "next": "14.2.15",
     "pdfjs-dist": "3.11.174",

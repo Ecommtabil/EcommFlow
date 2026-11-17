@@ -29,9 +29,10 @@ export async function entrar(_prev: { erro?: string } | undefined, fd: FormData)
     return { erro: 'Usuário ou senha inválidos.' };
   }
   tentativas.delete(chave);
+  const fin = await q1<{ acesso_financeiro: boolean }>('SELECT acesso_financeiro FROM operadores WHERE id = $1', [u.id]);
   await tx(null, (c) => c.query('UPDATE operadores SET ultimo_acesso = now() WHERE id = $1', [u.id]));
 
-  const token = await assinar({ id: u.id, nome: u.nome, perfil: u.perfil, esc: u.escritorio_id, escNome: u.escritorio });
+  const token = await assinar({ id: u.id, nome: u.nome, perfil: u.perfil, esc: u.escritorio_id, escNome: u.escritorio, fin: !!fin?.acesso_financeiro });
   cookies().set(COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',

@@ -14,7 +14,7 @@ async function tarefaPermitida(s: Sessao, id: number | null) {
     [id, s.esc],
   );
   if (!t) throw new ErroNegocio('Tarefa não encontrada.');
-  if (t.restrito && s.perfil !== 'gestor') throw new ErroNegocio('Acesso restrito a gestores.');
+  if (t.restrito && !s.fin) throw new ErroNegocio('Acesso restrito ao Módulo Financeiro.');
   if (s.perfil !== 'gestor' && t.operador_id !== s.id) throw new ErroNegocio('Você só pode alterar as suas tarefas.');
   return t;
 }
@@ -75,7 +75,7 @@ export async function criarTarefa(fd: FormData) {
     if (!titulo || !dep || !resp) throw new ErroNegocio('Preencha título, departamento e responsável.');
     const d = await q1<{ restrito_gestor: boolean }>('SELECT restrito_gestor FROM departamentos WHERE id = $1 AND escritorio_id = $2', [dep, s.esc]);
     if (!d) throw new ErroNegocio('Departamento inválido.');
-    if (d.restrito_gestor && s.perfil !== 'gestor') throw new ErroNegocio('Departamento restrito a gestores.');
+    if (d.restrito_gestor && !s.fin) throw new ErroNegocio('Departamento restrito ao Módulo Financeiro.');
     const cliente = num(fd, 'cliente');
     const prioridade = ['alta', 'media', 'baixa'].includes(txt(fd, 'prioridade')) ? txt(fd, 'prioridade') : 'media';
     const etapas = txt(fd, 'etapas').split('\n').map((x) => x.trim()).filter(Boolean).slice(0, 20);
@@ -150,4 +150,17 @@ export async function alternarRotina(fd: FormData) {
   await executar(fd, async () => {
     await tx(s, (c) => c.query('UPDATE rotinas SET ativa = NOT ativa WHERE id = $1 AND escritorio_id = $2', [num(fd, 'id'), s.esc]));
   }, 'Rotina atualizada.', '/rotinas');
+}
+
+/** Exclui uma rotina: remove tarefas em aberto (e boletos não enviados ligados a elas); mantém tarefas concluídas. */
+export async function excluirRotina(fd: FormData) {
+  const s = await exigirUsuario();
+  await executar(fd, async () => {
+    const r = await q1<{ restrito: boolean }>(
+      'SELECT d.restrito_gestor AS restrito FROM rotinas r JOIN departamentos d ON d.id = r.departamento_id WHERE r.id = $1 AND r.escritorio_id = $2',
+      [num(fd, 'id'), s.esc]);
+    if (!r) throw new ErroNegocio('Rotina não encontrada.');
+    if (r.restrito ? !s.fin : s.perfil !== 'gestor') throw new ErroNegocio('Sem permissão para excluir esta rotina.');
+    await tx(s, (c) => c.query('SELECT excluir_rotina($1)', [num(fd, 'id')]));
+  }, 'Rotina excluída. Tarefas concluídas foram mantidas no histórico.', '/rotinas');
 }

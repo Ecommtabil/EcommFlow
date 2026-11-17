@@ -1,12 +1,12 @@
 'use server';
-import { exigirGestor } from '@/lib/auth';
+import { exigirFinanceiro } from '@/lib/auth';
 import { ErroNegocio, bool, executar, num, txt } from '@/lib/acao';
 import { q, q1, tx } from '@/lib/db';
 import { brl, digitos, fmtData, mascaraDoc, normalizar, parseValor, REGIMES } from '@/lib/format';
 import { lerBoleto, textoPdf } from '@/lib/boleto';
 
 export async function receberBoleto(fd: FormData) {
-  const s = await exigirGestor();
+  const s = await exigirFinanceiro();
   const desfazer = bool(fd, 'desfazer');
   await executar(fd, async () => {
     const data = txt(fd, 'data') || null;
@@ -24,19 +24,20 @@ export async function receberBoleto(fd: FormData) {
 
 /** Cadastro/edição de cobrança: mensal (rotinas GERAR + ENVIAR) ou avulsa (boleto único). */
 export async function salvarCobranca(fd: FormData) {
-  const s = await exigirGestor();
+  const s = await exigirFinanceiro();
   await executar(fd, async () => {
     const cobranca = num(fd, 'cobranca');
     const valor = parseValor(txt(fd, 'valor'));
     if (!(valor > 0)) throw new ErroNegocio('Informe o valor do boleto.');
     const resp = num(fd, 'responsavel');
-    const g = await q1('SELECT 1 FROM operadores WHERE id = $1 AND escritorio_id = $2 AND perfil = $3', [resp, s.esc, 'gestor']);
-    if (!g) throw new ErroNegocio('O responsável deve ser um gestor.');
+    const g = await q1('SELECT 1 FROM operadores WHERE id = $1 AND escritorio_id = $2 AND acesso_financeiro', [resp, s.esc]);
+    if (!g) throw new ErroNegocio('O responsável precisa ter acesso ao Módulo Financeiro.');
     const obs = txt(fd, 'observacao') || null;
     const tipo = txt(fd, 'tipo') === 'avulso' ? 'avulso' : 'mensal';
     const diaV = num(fd, 'dia_vencimento');
-    const diaG = num(fd, 'dia_gerar');
-    const diaE = num(fd, 'dia_enviar');
+    // Padrão do escritório: gerar todo dia 01 e enviar 2 dias antes do vencimento
+    const diaG = num(fd, 'dia_gerar') ?? 1;
+    const diaE = num(fd, 'dia_enviar') ?? (diaV ? Math.max(diaV - 2, 1) : null);
     const okDia = (d: number | null) => d !== null && d >= 1 && d <= 31;
     if (tipo === 'mensal' && !(okDia(diaV) && okDia(diaG) && okDia(diaE))) throw new ErroNegocio('Os dias devem estar entre 1 e 31.');
     const dataV = txt(fd, 'data_vencimento');
@@ -44,7 +45,7 @@ export async function salvarCobranca(fd: FormData) {
     if (tipo === 'avulso' && !/^\d{4}-\d{2}-\d{2}$/.test(dataV)) throw new ErroNegocio('Informe a data de vencimento do boleto.');
 
     const dep = await q1<{ id: number }>('SELECT id FROM departamentos WHERE escritorio_id = $1 AND restrito_gestor ORDER BY id LIMIT 1', [s.esc]);
-    if (!dep) throw new ErroNegocio('Cadastre o departamento FINANCEIRO (restrito a gestores).');
+    if (!dep) throw new ErroNegocio('Cadastre o departamento FINANCEIRO (restrito).');
 
     await tx(s, async (c) => {
       if (cobranca) {
@@ -106,7 +107,7 @@ export async function salvarCobranca(fd: FormData) {
 }
 
 export async function alternarCobranca(fd: FormData) {
-  const s = await exigirGestor();
+  const s = await exigirFinanceiro();
   await executar(fd, async () => {
     await tx(s, (c) =>
       c.query("UPDATE rotinas SET ativa = NOT ativa WHERE cobranca_id = $1 AND escritorio_id = $2 AND periodicidade <> 'unica'", [num(fd, 'cobranca'), s.esc]),
@@ -131,14 +132,14 @@ export type LinhaConciliacao = {
 };
 
 export async function lerPdfs(_prev: unknown, fd: FormData): Promise<{ linhas: LinhaConciliacao[]; erro?: string }> {
-  const s = await exigirGestor();
+  const s = await exigirFinanceiro();
   const arquivos = fd.getAll('pdfs').filter((f): f is File => f instanceof File && f.size > 0);
   if (!arquivos.length) return { linhas: [], erro: 'Selecione ao menos um PDF.' };
   if (arquivos.length > 300) return { linhas: [], erro: 'Envie no máximo 300 PDFs por vez.' };
 
   const esc = await q1<{ cnpj: string | null }>('SELECT cnpj FROM escritorios WHERE id = $1', [s.esc]);
   const clientes = await q<{ id: number; razao_social: string; cnpj: string | null }>(
-    'SELECT id, razao_social, cnpj FROM clientes WHERE escritorio_id = $1', [s.esc]);
+    'SELECT id, razao_social, cnpj FROM clientes WHERE escritorio_id = $1 AND excluido_em IS NULL', [s.esc]);
   const boletos = await q<{ id: number; cliente_id: number; valor: number; vencimento: string; enviado_em: string | null; gerado_em: string | null; nosso_numero: string | null }>(
     'SELECT id, cliente_id, valor, vencimento, enviado_em, gerado_em, nosso_numero FROM boletos WHERE escritorio_id = $1', [s.esc]);
 
@@ -158,7 +159,7 @@ export async function lerPdfs(_prev: unknown, fd: FormData): Promise<{ linhas: L
 
     let c = clientes.find((x) => digitos(x.cnpj) === digitos(d.documento));
     if (!c) {
-      const p = normalizar(d.pagador);
+      const p = normalizar(d.pagador || '');
       c = clientes.find((x) => normalizar(x.razao_social) === p) ||
           clientes.find((x) => normalizar(x.razao_social).startsWith(p) || p.startsWith(normalizar(x.razao_social))) ||
           clientes.find((x) => normalizar(x.razao_social).split(' ').slice(0, 2).join(' ') === p.split(' ').slice(0, 2).join(' '));
@@ -181,7 +182,7 @@ export async function lerPdfs(_prev: unknown, fd: FormData): Promise<{ linhas: L
 }
 
 export async function aplicarConciliacao(fd: FormData) {
-  const s = await exigirGestor();
+  const s = await exigirFinanceiro();
   await executar(fd, async () => {
     const linhas = JSON.parse(String(fd.get('dados') || '[]')) as LinhaConciliacao[];
     const marcados = new Set(fd.getAll('ok').map(String));
@@ -213,4 +214,119 @@ export async function aplicarConciliacao(fd: FormData) {
     });
     return n ? undefined : '/financeiro/conciliacao';
   }, 'Conciliação registrada. Envios concluídos para os boletos selecionados.', '/financeiro');
+}
+
+// ---------------------------------------------------------------------
+// Exclusões (mantêm o histórico passado: tarefas concluídas e boletos enviados/recebidos)
+// ---------------------------------------------------------------------
+export async function excluirCobranca(fd: FormData) {
+  const s = await exigirFinanceiro();
+  await executar(fd, async () => {
+    const r = await q1('SELECT 1 FROM rotinas WHERE cobranca_id = $1 AND escritorio_id = $2', [num(fd, 'cobranca'), s.esc]);
+    if (!r) throw new ErroNegocio('Cobrança não encontrada.');
+    await tx(s, (c) => c.query('SELECT excluir_cobranca($1)', [num(fd, 'cobranca')]));
+    return '/financeiro/cobrancas';
+  }, 'Cobrança excluída. Boletos enviados/recebidos foram mantidos no histórico.', '/financeiro/cobrancas');
+}
+
+export async function excluirBoleto(fd: FormData) {
+  const s = await exigirFinanceiro();
+  await executar(fd, async () => {
+    const b = await q1('SELECT 1 FROM boletos WHERE id = $1 AND escritorio_id = $2', [num(fd, 'id'), s.esc]);
+    if (!b) throw new ErroNegocio('Boleto não encontrado.');
+    await tx(s, (c) => c.query('SELECT excluir_boleto($1)', [num(fd, 'id')]));
+  }, 'Boleto excluído (e as tarefas em aberto dele).', '/financeiro/boletos');
+}
+
+// ---------------------------------------------------------------------
+// Nova cobrança a partir de 1 boleto em PDF (modelo)
+// ---------------------------------------------------------------------
+export type BoletoModelo = {
+  erro?: string;
+  arquivo?: string;
+  pagador?: string;
+  documento?: string;
+  valor?: number;
+  vencimento?: string;
+  nossoNumero?: string;
+  cliente?: { id: number; razao_social: string; cnpj: string | null; porNome: boolean } | null;
+  jaTemCobranca?: boolean;
+};
+
+export async function lerBoletoModelo(_prev: unknown, fd: FormData): Promise<BoletoModelo> {
+  const s = await exigirFinanceiro();
+  const f = fd.get('pdf');
+  if (!(f instanceof File) || !f.size) return { erro: 'Selecione o PDF do boleto.' };
+  if (!/\.pdf$/i.test(f.name) || f.size > 5 * 1024 * 1024) return { erro: 'Envie um PDF de até 5 MB.' };
+  const esc = await q1<{ cnpj: string | null }>('SELECT cnpj FROM escritorios WHERE id = $1', [s.esc]);
+  let d;
+  try { d = lerBoleto(await textoPdf(await f.arrayBuffer()), esc?.cnpj || ''); } catch { return { erro: 'Não foi possível ler o PDF.' }; }
+  if (!d.valor || !d.vencimento || !d.documento) return { erro: 'Não foi possível identificar pagador, valor e vencimento neste PDF.' };
+  const clientes = await q<{ id: number; razao_social: string; cnpj: string | null }>(
+    'SELECT id, razao_social, cnpj FROM clientes WHERE escritorio_id = $1 AND excluido_em IS NULL', [s.esc]);
+  let porNome = false;
+  let c = clientes.find((x) => digitos(x.cnpj) === digitos(d.documento));
+  if (!c) {
+    const p = normalizar(d.pagador || '');
+    c = clientes.find((x) => normalizar(x.razao_social) === p) || clientes.find((x) => normalizar(x.razao_social).startsWith(p) || p.startsWith(normalizar(x.razao_social)));
+    porNome = !!c;
+  }
+  const jaTem = c ? !!(await q1("SELECT 1 FROM rotinas WHERE cliente_id = $1 AND acao_financeira IS NOT NULL AND periodicidade <> 'unica'", [c.id])) : false;
+  return { arquivo: f.name, pagador: d.pagador, documento: d.documento, valor: d.valor, vencimento: d.vencimento, nossoNumero: d.nossoNumero,
+    cliente: c ? { ...c, porNome } : null, jaTemCobranca: jaTem };
+}
+
+/** Cria a cobrança mensal: valor e dia de vencimento do boleto; gerar dia 01; enviar 2 dias antes do vencimento. */
+export async function criarCobrancaDoPdf(fd: FormData) {
+  const s = await exigirFinanceiro();
+  await executar(fd, async () => {
+    const d = JSON.parse(String(fd.get('dados') || '{}')) as BoletoModelo;
+    if (!d.valor || !d.vencimento || !d.documento) throw new ErroNegocio('Dados do boleto inválidos. Leia o PDF novamente.');
+    const diaV = parseInt(d.vencimento.slice(8, 10), 10);
+    const dep = await q1<{ id: number }>('SELECT id FROM departamentos WHERE escritorio_id = $1 AND restrito_gestor ORDER BY id LIMIT 1', [s.esc]);
+    if (!dep) throw new ErroNegocio('Cadastre o departamento FINANCEIRO (restrito).');
+    const resp = num(fd, 'responsavel') ?? s.id;
+    const okResp = await q1('SELECT 1 FROM operadores WHERE id = $1 AND escritorio_id = $2 AND acesso_financeiro', [resp, s.esc]);
+    if (!okResp) throw new ErroNegocio('O responsável precisa ter acesso ao Módulo Financeiro.');
+    await tx(s, async (c) => {
+      let cliente = d.cliente?.id ?? null;
+      if (cliente) {
+        const ok = await c.query('SELECT 1 FROM clientes WHERE id = $1 AND escritorio_id = $2 AND excluido_em IS NULL', [cliente, s.esc]);
+        if (!ok.rowCount) throw new ErroNegocio('Empresa não encontrada.');
+      } else {
+        if (txt(fd, 'cadastrar') !== 'sim') throw new ErroNegocio('Empresa não cadastrada: confirme o cadastro para continuar.');
+        const nome = (txt(fd, 'novo_nome') || d.pagador || '').toUpperCase();
+        if (!nome) throw new ErroNegocio('Informe o nome da empresa.');
+        const ex = await c.query("SELECT id FROM clientes WHERE escritorio_id = $1 AND regexp_replace(COALESCE(cnpj,''), '\\D', '', 'g') = $2", [s.esc, digitos(d.documento)]);
+        if (ex.rowCount) {
+          cliente = ex.rows[0].id;
+          await c.query('UPDATE clientes SET excluido_em = NULL, ativo = TRUE, razao_social = $2 WHERE id = $1', [cliente, nome]);
+        } else {
+          const r = await c.query(
+            "INSERT INTO clientes (escritorio_id, razao_social, cnpj, operador_padrao, entrada_escritorio) VALUES ($1,$2,$3,$4,date_trunc('month', CURRENT_DATE)) RETURNING id",
+            [s.esc, nome, mascaraDoc(d.documento || ''), resp]);
+          cliente = r.rows[0].id;
+        }
+      }
+      const cob = (await c.query("SELECT nextval('cobranca_seq') AS id")).rows[0].id;
+      const ids: number[] = [];
+      for (const [titulo, acao, dia] of [['GERAR BOLETOS', 'gerar_boleto', 1], ['ENVIAR BOLETOS', 'enviar_boleto', Math.max(diaV - 2, 1)]] as const) {
+        const r = await c.query(
+          `INSERT INTO rotinas (escritorio_id, titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade,
+                                acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao, criado_por)
+           VALUES ($1,$2,$3,$4,$5,'mensal',$6,'alta',$7::acao_financeira,$8,$9,$10,$11,$12) RETURNING id`,
+          [s.esc, titulo, dep.id, cliente, resp, dia, acao, cob, d.valor, diaV, `Criada a partir do boleto ${d.arquivo ?? ''}`.trim(), s.id]);
+        ids.push(r.rows[0].id);
+      }
+      for (const id of ids) await c.query('SELECT gerar_tarefa_rotina($1, CURRENT_DATE, TRUE)', [id]);
+      // O boleto modelo já foi emitido: registra-o como GERADO no ciclo dele (se coincidir com o ciclo criado)
+      const b = await c.query(
+        `UPDATE boletos SET gerado_em = now(), valor = $3, vencimento = $4, nosso_numero = NULLIF($5, ''), arquivo_pdf = $6
+          WHERE cobranca_id = $1 AND escritorio_id = $2 AND competencia = date_trunc('month', $4::date) AND gerado_em IS NULL
+          RETURNING tarefa_gerar_id`,
+        [cob, s.esc, d.valor, d.vencimento, d.nossoNumero ?? '', d.arquivo ?? null]);
+      if (b.rows[0]?.tarefa_gerar_id) await c.query("UPDATE tarefas SET status = 'concluida' WHERE id = $1", [b.rows[0].tarefa_gerar_id]);
+    });
+    return '/financeiro/cobrancas';
+  }, 'Cobrança mensal criada a partir do boleto.', '/financeiro/cobrancas');
 }

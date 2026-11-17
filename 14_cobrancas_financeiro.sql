@@ -1,0 +1,240 @@
+-- Executar após 10_escritorio_ecommtabil.sql
+SELECT set_config('app.escritorio_id', (SELECT id::text FROM escritorios WHERE slug = 'ecommtabil'), false);
+
+-- 59 cobranças mensais (boletos Banco Inter, total R$ 37,761.00). Gerar e enviar todo dia 05.
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '66.715.125/0001-06'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 120.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '68.883.054/0001-86'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 140.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '69.163.774/0001-30'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 140.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '64.167.013/0001-32'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 300.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '52.328.088/0001-79'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 20, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '53.333.812/0001-15'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '06.085.742/0001-43'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 4500.00, 20, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '46.902.672/0001-93'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 200.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '57.800.223/0001-50'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 200.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '53.631.073/0001-48'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 1495.00, 16, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '67.569.010/0001-13'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '64.151.090/0001-02'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 100.00, 16, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '28.113.458/0001-76'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 1500.00, 20, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '61.631.275/0001-18'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '61.073.007/0001-28'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 300.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '39.703.904/0001-19'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '64.161.329/0001-17'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 300.00, 20, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '21.100.065/0001-89'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '01.799.502/0001-97'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 300.00, 20, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '33.273.511/0001-36'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 3400.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '34.455.859/0001-07'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 375.00, 20, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '65.269.419/0001-99'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 200.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '57.996.955/0001-68'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '61.526.103/0001-84'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '59.072.245/0001-77'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 350.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '29.397.624/0001-76'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '59.331.761/0001-79'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 20, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '64.152.664/0001-59'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 16, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '64.148.785/0001-27'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 25, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '52.738.075/0001-78'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 300.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '49.332.577/0001-90'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 300.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '45.840.282/0001-73'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '64.417.445/0001-54'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 120.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '67.029.952/0001-09'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 200.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '66.526.357/0001-16'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 300.00, 20, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '45.877.393/0001-54'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 527.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '16.584.311/0001-85'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 527.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '36.714.229/0001-35'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 527.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '69.321.188/0001-76'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '62.349.478/0001-89'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 150.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '60.677.957/0001-07'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 150.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '64.351.421/0001-40'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 120.00, 20, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '48.238.823/0001-86'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 3600.00, 5, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '51.015.304/0001-63'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 21, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '33.144.886/0001/04'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 150.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '43.586.524/0001-19'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 400.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '64.182.278/0001-00'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 300.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '69.253.254/0001-18'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '68.750.441/0001-44'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '59.520.118/0001-93'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 120.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '37.664.361/0001-42'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 2500.00, 16, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '40.970.946/0001-03'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 2500.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '64.208.922/0001-71'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '65.975.460/0001-80'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 250.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '61.549.932/0001-82'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 300.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '66.469.817/0001-11'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 200.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '63.498.659/0001-30'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 800.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '49.928.376/0001-50'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 1200.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);
+WITH cob AS (SELECT nextval('cobranca_seq') AS id)
+INSERT INTO rotinas (titulo, departamento_id, cliente_id, operador_id, periodicidade, dia_mes, prioridade, acao_financeira, cobranca_id, valor, dia_vencimento_boleto, observacao)
+SELECT t, (SELECT id FROM departamentos WHERE escritorio_id = esc() AND nome = 'FINANCEIRO'), (SELECT id FROM clientes WHERE escritorio_id = esc() AND cnpj = '59.049.575/0001-41'), (SELECT id FROM operadores WHERE escritorio_id = esc() AND nome = 'Junior'), 'mensal', 5, 'alta', a::acao_financeira, cob.id, 3800.00, 10, 'Mensalidade'
+FROM cob, (VALUES ('GERAR BOLETOS', 'gerar_boleto'), ('ENVIAR BOLETOS', 'enviar_boleto')) AS x(t, a);

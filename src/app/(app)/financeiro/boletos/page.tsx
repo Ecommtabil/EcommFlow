@@ -1,13 +1,14 @@
-import { exigirGestor } from '@/lib/auth';
+import { exigirFinanceiro } from '@/lib/auth';
 import { q } from '@/lib/db';
 import { brl, fmtComp, fmtData, SITUACAO_BOLETO } from '@/lib/format';
-import { receberBoleto } from '@/app/actions/financeiro';
+import { excluirBoleto, receberBoleto } from '@/app/actions/financeiro';
+import { BotaoConfirmar } from '@/components/BotaoConfirmar';
 
 export const metadata = { title: 'EcommFlow · Boletos' };
 const COR: Record<string, string> = { recebido: 'rec', a_receber: 'arec', vencido: 'venc', nao_gerado: 'ng' };
 
 export default async function Boletos({ searchParams: sp }: { searchParams: { comp?: string; sit?: string; q?: string } }) {
-  const s = await exigirGestor();
+  const s = await exigirFinanceiro();
   const comps = await q<{ comp: string }>('SELECT DISTINCT competencia AS comp FROM boletos WHERE escritorio_id = $1 ORDER BY 1', [s.esc]);
   const B = await q<{ id: number; razao_social: string; cnpj: string | null; valor: number; vencimento: string; gerado_em: string | null; enviado_em: string | null; arquivo_pdf: string | null; divergencia: string | null; pago_em: string | null; situacao: string }>(
     `SELECT id, razao_social, cnpj, valor, vencimento, gerado_em, enviado_em, arquivo_pdf, divergencia, pago_em, situacao FROM vw_boletos
@@ -33,6 +34,10 @@ export default async function Boletos({ searchParams: sp }: { searchParams: { co
             <td>{b.enviado_em ? <>✔ {b.arquivo_pdf && <span className="desc" title={b.arquivo_pdf}>📎 PDF</span>}</> : <span className="desc">—</span>}</td>
             <td><span className={`sit ${COR[b.situacao]}`}>{SITUACAO_BOLETO[b.situacao]}</span>{b.pago_em && <div className="desc">em {fmtData(b.pago_em)}</div>}</td>
             <td style={{ whiteSpace: 'nowrap' }}>
+              {!b.enviado_em && !b.pago_em && (
+                <form action={excluirBoleto} className="inline"><input type="hidden" name="id" value={b.id} /><input type="hidden" name="back" value={back} />
+                  <BotaoConfirmar title="Excluir boleto" mensagem={`Excluir o boleto de ${b.razao_social} (venc. ${fmtData(b.vencimento)})?\n\nAs tarefas em aberto deste boleto também serão removidas.`}>🗑</BotaoConfirmar>{' '}</form>
+              )}
               {b.gerado_em && !b.pago_em && (
                 <form action={receberBoleto} className="inline" style={{ display: 'inline-flex', gap: 4 }}>
                   <input type="hidden" name="id" value={b.id} /><input type="hidden" name="back" value={back} />

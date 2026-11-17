@@ -1,4 +1,4 @@
-import { exigirGestor } from '@/lib/auth';
+import { exigirFinanceiro } from '@/lib/auth';
 import { listarTarefas } from '@/lib/tarefas';
 import { TaskTable } from '@/components/TaskTable';
 import { Busca, FiltrosTarefas, urlAtual } from '@/components/FiltrosTarefas';
@@ -6,7 +6,7 @@ import { Busca, FiltrosTarefas, urlAtual } from '@/components/FiltrosTarefas';
 export const metadata = { title: 'EcommFlow · Tarefas financeiras' };
 
 export default async function TarefasFin({ searchParams: sp }: { searchParams: Busca }) {
-  const s = await exigirGestor();
+  const s = await exigirFinanceiro();
   const tarefas = await listarTarefas(s, { financeiro: true, titulo: sp.titulo, status: sp.status, busca: sp.q });
   return (
     <>

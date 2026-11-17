@@ -1,26 +1,28 @@
 import { notFound } from 'next/navigation';
-import { exigirGestor } from '@/lib/auth';
+import { exigirFinanceiro } from '@/lib/auth';
 import { q, q1 } from '@/lib/db';
 import { clientesOpcoes } from '@/lib/tarefas';
-import { salvarCobranca } from '@/app/actions/financeiro';
+import { excluirCobranca, salvarCobranca } from '@/app/actions/financeiro';
+import { BotaoConfirmar } from '@/components/BotaoConfirmar';
 import { Cobranca, SQL_COBRANCAS } from '@/lib/cobrancas';
 import { CobrancaCampos } from './CobrancaCampos';
 
 export const metadata = { title: 'EcommFlow · Cobrança' };
 
 export default async function EditarCobranca({ params }: { params: { id: string } }) {
-  const s = await exigirGestor();
+  const s = await exigirFinanceiro();
   const nova = params.id === 'nova';
   const id = nova ? null : parseInt(params.id);
   if (!nova && !Number.isFinite(id)) notFound();
   const c = nova ? null : await q1<Cobranca>(`${SQL_COBRANCAS} AND r.cobranca_id = $2 GROUP BY r.cobranca_id, r.cliente_id, c.razao_social, c.cnpj`, [s.esc, id]);
   if (!nova && !c) notFound();
   const [gestores, clientes] = await Promise.all([
-    q<{ id: number; nome: string }>("SELECT id, nome FROM operadores WHERE escritorio_id = $1 AND ativo AND perfil = 'gestor' ORDER BY nome", [s.esc]),
+    q<{ id: number; nome: string }>('SELECT id, nome FROM operadores WHERE escritorio_id = $1 AND ativo AND acesso_financeiro ORDER BY nome', [s.esc]),
     clientesOpcoes(s),
   ]);
   const hoje = new Date(Date.now() - 3 * 3600e3).toISOString().slice(0, 10);
   return (
+    <>
     <form action={salvarCobranca} className="card form">
       <h3>{nova ? 'Novo cliente / boleto' : `Editar cobrança · ${c!.razao_social}`}</h3>
       {id && <input type="hidden" name="cobranca" value={id} />}
@@ -33,8 +35,8 @@ export default async function EditarCobranca({ params }: { params: { id: string 
       {(!c || c.tipo === 'mensal') && (
         <div className="row" data-tipo="mensal">
           <div><label>Vencimento do boleto (dia)</label><input type="number" name="dia_vencimento" min={1} max={31} defaultValue={c?.dia_vencimento ?? 10} /></div>
-          <div><label>Gerar boleto (dia)</label><input type="number" name="dia_gerar" min={1} max={31} defaultValue={c?.dia_gerar ?? 5} /></div>
-          <div><label>Enviar boleto (dia)</label><input type="number" name="dia_enviar" min={1} max={31} defaultValue={c?.dia_enviar ?? 5} /></div>
+          <div><label>Gerar boleto (dia)</label><input type="number" name="dia_gerar" min={1} max={31} defaultValue={c?.dia_gerar ?? 1} placeholder="1" /></div>
+          <div><label>Enviar boleto (dia)</label><input type="number" name="dia_enviar" min={1} max={31} defaultValue={c?.dia_enviar ?? ''} placeholder="2 dias antes do venc." /></div>
         </div>
       )}
       <label>Observação</label><input name="observacao" defaultValue={c?.observacao ?? ''} placeholder="Ex.: mensalidade contábil, honorário extra…" />
@@ -43,7 +45,15 @@ export default async function EditarCobranca({ params }: { params: { id: string 
           <input type="checkbox" name="aplicar" defaultChecked style={{ width: 'auto' }} /> Atualizar também o boleto e as tarefas em aberto
         </label>
       )}
+      <p className="desc">Padrão: gerar todo dia 01 e enviar 2 dias antes do vencimento (deixe “Enviar” em branco).</p>
       <button className="btn" style={{ marginTop: 16 }}>Salvar</button>
     </form>
+    {!nova && (
+      <form action={excluirCobranca} style={{ marginTop: 12 }}>
+        <input type="hidden" name="cobranca" value={id!} /><input type="hidden" name="back" value={`/financeiro/cobrancas/${id}`} />
+        <BotaoConfirmar className="btn gh" title="Excluir cobrança" mensagem={`Excluir esta cobrança?\n\nSerão removidas as rotinas, as tarefas em aberto e os boletos não enviados. O histórico (enviados/recebidos e tarefas concluídas) é mantido.`}>🗑 Excluir cobrança</BotaoConfirmar>
+      </form>
+    )}
+    </>
   );
 }

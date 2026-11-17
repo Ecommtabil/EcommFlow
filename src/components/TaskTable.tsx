@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { conferir, marcarEtapa, mudarStatus } from '@/app/actions/tarefas';
-import { brl, fmtData, PRIORIDADE, STATUS } from '@/lib/format';
+import { brl, ehEnvioGuia, fmtData, PRIORIDADE, ROTULO_MEIO, STATUS } from '@/lib/format';
 import type { Sessao } from '@/lib/session';
 import type { Tarefa } from '@/lib/tarefas';
 
@@ -29,12 +29,13 @@ export function TaskTable({ tarefas, sessao, back, mostrarResponsavel = true }: 
 }) {
   const gestor = sessao.perfil === 'gestor';
   if (!tarefas.length) return <div className="card mut">Nenhuma tarefa encontrada.</div>;
+  const envio = tarefas.some((t) => ehEnvioGuia(t.titulo));
   return (
     <div className="card tblwrap">
       <table>
         <thead>
           <tr>
-            <th>Tarefa</th><th>Depto</th><th>Cliente</th>{mostrarResponsavel && <th>Responsável</th>}
+            <th>Tarefa</th><th>Depto</th><th>Cliente</th>{envio && <><th>Meio de envio</th><th>Contato</th></>}{mostrarResponsavel && <th>Responsável</th>}
             <th>Atribuída por</th><th>Prioridade</th><th>Prazo</th><th>Status</th><th>Ação</th>
           </tr>
         </thead>
@@ -67,6 +68,12 @@ export function TaskTable({ tarefas, sessao, back, mostrarResponsavel = true }: 
                 </td>
                 <td><span className="tag dep">{t.departamento}</span></td>
                 <td>{t.cliente || <span className="desc">Interna</span>}</td>
+                {envio && (ehEnvioGuia(t.titulo) ? (
+                  <>
+                    <td>{t.meio_envio ? <span className="tag dep">{ROTULO_MEIO[t.meio_envio] ?? t.meio_envio}</span> : <span className="desc">não informado</span>}</td>
+                    <td>{t.contato || <span className="desc">não informado</span>}{t.contato_documentos && <div className="desc">{t.contato_documentos}</div>}</td>
+                  </>
+                ) : <><td className="desc">—</td><td className="desc">—</td></>)}
                 {mostrarResponsavel && <td>{t.responsavel}</td>}
                 <td>{t.criado_por_nome || <span className="desc">Rotina</span>}</td>
                 <td><span className={`tag ${t.prioridade}`}>{PRIORIDADE[t.prioridade]}</span></td>

@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-export function NavLinks({ gestor, alertas, vencidos }: { gestor: boolean; alertas: number; vencidos: number }) {
+export function NavLinks({ gestor, fin, alertas, vencidos }: { gestor: boolean; fin: boolean; alertas: number; vencidos: number }) {
   const p = usePathname();
   const L = (href: string, ic: string, txt: string, badge?: number) => (
     <Link href={href} className={`nav-link ${p === href || (href !== '/dashboard' && p.startsWith(href + '/')) ? 'on' : ''}`}>
@@ -20,6 +20,12 @@ export function NavLinks({ gestor, alertas, vencidos }: { gestor: boolean; alert
           {L('/rotinas', '🔁', 'Rotinas')}
           {L('/cadastros', '👥', 'Cadastros')}
           {L('/historico', '🕓', 'Histórico')}
+        </>
+      )}
+      <div className="navsep"><span className="t">FERRAMENTAS</span></div>
+      {L('/ferramentas', '🧰', 'Ferramentas')}
+      {fin && (
+        <>
           <div className="navsep"><span className="t">MÓDULO FINANCEIRO</span></div>
           {L('/financeiro', '💰', 'Financeiro', vencidos)}
         </>

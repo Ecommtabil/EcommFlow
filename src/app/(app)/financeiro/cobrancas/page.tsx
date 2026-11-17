@@ -1,14 +1,15 @@
 import Link from 'next/link';
-import { exigirGestor } from '@/lib/auth';
+import { exigirFinanceiro } from '@/lib/auth';
 import { q } from '@/lib/db';
 import { brl, fmtData } from '@/lib/format';
-import { alternarCobranca } from '@/app/actions/financeiro';
+import { alternarCobranca, excluirCobranca } from '@/app/actions/financeiro';
+import { BotaoConfirmar } from '@/components/BotaoConfirmar';
 import { Cobranca, SQL_COBRANCAS } from '@/lib/cobrancas';
 
 export const metadata = { title: 'EcommFlow · Cobranças' };
 
 export default async function Cobrancas({ searchParams: sp }: { searchParams: { q?: string } }) {
-  const s = await exigirGestor();
+  const s = await exigirFinanceiro();
   const C = await q<Cobranca>(
     `${SQL_COBRANCAS} AND ($2 = '' OR c.razao_social ILIKE '%' || $2 || '%' OR c.cnpj ILIKE '%' || $2 || '%')
      GROUP BY r.cobranca_id, r.cliente_id, c.razao_social, c.cnpj ORDER BY c.razao_social`, [s.esc, sp.q || '']);
@@ -17,6 +18,7 @@ export default async function Cobrancas({ searchParams: sp }: { searchParams: { 
     <>
       <form className="filtros">
         <Link className="btn" href="/financeiro/cobrancas/nova">+ Novo cliente / boleto</Link>
+        <Link className="btn gh" href="/financeiro/cobrancas/pdf">📄 Nova cobrança a partir de PDF</Link>
         <input name="q" placeholder="🔎 Buscar empresa ou CNPJ" defaultValue={sp.q || ''} />
         <button className="btn sm">Buscar</button>
         <span className="mut right" style={{ alignSelf: 'center' }}>{ativas.length} cobranças mensais ativas · {brl(ativas.reduce((a, c) => a + c.valor, 0))}/mês</span>
@@ -37,7 +39,9 @@ export default async function Cobrancas({ searchParams: sp }: { searchParams: { 
               {c.tipo === 'mensal' && (
                 <form action={alternarCobranca} className="inline"><input type="hidden" name="cobranca" value={c.cobranca_id} /><input type="hidden" name="back" value="/financeiro/cobrancas" />
                   <button className="btn sm gh">{c.ativa ? '⏸ Pausar' : '▶ Retomar'}</button></form>
-              )}
+              )}{' '}
+              <form action={excluirCobranca} className="inline"><input type="hidden" name="cobranca" value={c.cobranca_id} /><input type="hidden" name="back" value="/financeiro/cobrancas" />
+                <BotaoConfirmar title="Excluir cobrança" mensagem={`Excluir a cobrança de ${c.razao_social}?\n\nSerão removidas as rotinas, as tarefas em aberto e os boletos não enviados. Boletos enviados/recebidos e tarefas concluídas ficam no histórico.`}>🗑</BotaoConfirmar></form>
             </td>
           </tr>))}
         </tbody></table></div>

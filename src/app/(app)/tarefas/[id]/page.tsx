@@ -15,7 +15,7 @@ export default async function Detalhe({ params }: { params: { id: string } }) {
   const meta = await q1<{ restrito: boolean; operador_id: number }>(
     'SELECT d.restrito_gestor AS restrito, t.operador_id FROM tarefas t JOIN departamentos d ON d.id = t.departamento_id WHERE t.id = $1 AND t.escritorio_id = $2',
     [id, s.esc]);
-  if (!meta || (meta.restrito && s.perfil !== 'gestor')) notFound();
+  if (!meta || (meta.restrito && !s.fin)) notFound();
   const [t] = await listarTarefas(s, { id, status: 'todas', financeiro: meta.restrito });
   if (!t) notFound();
   const podeMexer = s.perfil === 'gestor' || t.operador_id === s.id;
@@ -25,7 +25,7 @@ export default async function Detalhe({ params }: { params: { id: string } }) {
          FROM historico_tarefas h LEFT JOIN operadores o ON o.id = h.operador_id WHERE h.tarefa_id = $1 ORDER BY h.registrado_em DESC, h.id DESC`, [id]),
     pessoas(s),
   ]);
-  const destinos = ops.filter((o) => o.id !== t.operador_id && (!t.restrito || o.perfil === 'gestor'));
+  const destinos = ops.filter((o) => o.id !== t.operador_id && (!t.restrito || o.fin));
   return (
     <>
       <h2 style={{ margin: '0 0 14px' }}>{t.titulo}</h2>

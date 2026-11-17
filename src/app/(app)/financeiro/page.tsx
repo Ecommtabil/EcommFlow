@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { exigirGestor } from '@/lib/auth';
+import { exigirFinanceiro } from '@/lib/auth';
 import { q, q1 } from '@/lib/db';
 import { brl, fmtComp, fmtData } from '@/lib/format';
 
 export const metadata = { title: 'EcommFlow · Financeiro' };
 
 export default async function Painel({ searchParams }: { searchParams: { comp?: string } }) {
-  const s = await exigirGestor();
+  const s = await exigirFinanceiro();
   const comps = await q<{ comp: string }>('SELECT DISTINCT competencia AS comp FROM boletos WHERE escritorio_id = $1 ORDER BY 1', [s.esc]);
   const atual = await q1<{ c: string }>("SELECT date_trunc('month', CURRENT_DATE)::date AS c");
   // Padrão: competência mais recente até o mês atual

@@ -25,7 +25,11 @@ export const SITUACAO_BOLETO: Record<string, string> = {
   nao_gerado: 'Não gerado',
 };
 export const REGIMES = ['Simples Nacional', 'MEI', 'Lucro Presumido', 'Lucro Real'];
-export const RAMOS = ['INDUSTRIA', 'COMERCIO', 'SERVICO', 'COMERCIO E SERVICO', 'INDUSTRIA E COMERCIO', 'TRANSPORTE', 'LOCACAO/ALUGUEL'];
+export const RAMOS = ['INDUSTRIA', 'COMERCIO', 'SERVICO', 'COMERCIO E SERVICO', 'INDUSTRIA E COMERCIO', 'TRANSPORTE', 'LOCACAO/ALUGUEL', 'HOLDING'];
+export const MEIOS_ENVIO = ['E-MAIL', 'WHATSAPP', 'E-MAIL E WHATSAPP', 'PORTAL', 'DOCUMENTO FISICO', 'OUTRO'];
+export const ROTULO_MEIO: Record<string, string> = { 'E-MAIL': 'E-mail', WHATSAPP: 'WhatsApp', 'E-MAIL E WHATSAPP': 'E-mail e WhatsApp', PORTAL: 'Portal', 'DOCUMENTO FISICO': 'Documento físico', OUTRO: 'Outro' };
+/** Tarefas de envio de guia mostram MEIO DE ENVIO e CONTATO da empresa */
+export const ehEnvioGuia = (titulo: string) => /ENVIO DE GUIA|ENVIAR GUIA/i.test(titulo);
 
 export const digitos = (x?: string | null) => (x || '').replace(/\D/g, '');
 

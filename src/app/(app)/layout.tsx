@@ -19,13 +19,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             string_agg(DISTINCT t.titulo, ' · ') FILTER (WHERE t.prazo = CURRENT_DATE) AS titulos
        FROM tarefas t JOIN departamentos d ON d.id = t.departamento_id
       WHERE t.operador_id = $1 AND NOT d.restrito_gestor AND t.status IN ('pendente','em_andamento')`,
-    [s.id, s.esc, gestor],
+    [s.id, s.esc, s.fin],
   );
   return (
     <div className="app">
       <nav>
         <div className="nbrand"><Logo size={32} /><div><b>EcommFlow</b><span>{s.escNome}</span></div></div>
-        <NavLinks gestor={gestor} alertas={(al?.hoje ?? 0) + (al?.breve ?? 0)} vencidos={al?.fin ?? 0} />
+        <NavLinks gestor={gestor} fin={s.fin} alertas={(al?.hoje ?? 0) + (al?.breve ?? 0)} vencidos={al?.fin ?? 0} />
         <OndasMenu />
       </nav>
       <main>

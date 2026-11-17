@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { exigirGestor } from '@/lib/auth';
 import { q, q1 } from '@/lib/db';
-import { RAMOS, REGIMES } from '@/lib/format';
+import { MEIOS_ENVIO, RAMOS, REGIMES, ROTULO_MEIO } from '@/lib/format';
 import { pessoas } from '@/lib/tarefas';
 import { salvarCliente } from '@/app/actions/cadastros';
 
@@ -36,9 +36,13 @@ export default async function Cliente({ params }: { params: { id: string } }) {
         </div>
         <div className="row">
           <div><label>Entrada no escritório</label><input type="month" name="entrada" defaultValue={c?.entrada_escritorio?.slice(0, 7) ?? ''} /></div>
-          <div><label>Responsável</label><select name="operador" defaultValue={c?.operador_padrao ?? ''}><option value="">Sem responsável</option>{ops.map((o) => <option key={o.id} value={o.id}>{o.nome}</option>)}</select></div>
+          <div><label>Responsável (analista)</label><select name="operador" defaultValue={c?.operador_padrao ?? ''}><option value="">Sem responsável</option>{ops.map((o) => <option key={o.id} value={o.id}>{o.nome}</option>)}</select></div>
         </div>
-        <label>Contato para envio de documentos</label><input name="contato" defaultValue={c?.contato_documentos ?? ''} placeholder="E-mail ou WhatsApp" />
+        <div className="row">
+          <div><label>Meio de envio</label><select name="meio_envio" defaultValue={c?.meio_envio ?? ''}><option value="">Não informado</option>{MEIOS_ENVIO.map((m) => <option key={m} value={m}>{ROTULO_MEIO[m]}</option>)}</select></div>
+          <div><label>Contato <span className="desc">(pessoa do cliente que recebe as guias)</span></label><input name="contato" defaultValue={c?.contato ?? ''} placeholder="Ex.: Maria - Financeiro" maxLength={160} /></div>
+        </div>
+        <label>E-mail / WhatsApp para envio</label><input name="contato_documentos" defaultValue={c?.contato_documentos ?? ''} placeholder="E-mail ou telefone/WhatsApp" maxLength={160} />
         <label style={{ display: 'flex', gap: 8, alignItems: 'center', color: 'var(--tx)' }}><input type="checkbox" name="ativo" defaultChecked={c ? c.ativo : true} style={{ width: 'auto' }} /> Cliente ativo</label>
         <button className="btn" style={{ marginTop: 16 }}>Salvar</button>
       </form>

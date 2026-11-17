@@ -10,8 +10,8 @@ export default async function Usuario({ params }: { params: { id: string } }) {
   const novo = params.id === 'novo';
   const id = novo ? null : parseInt(params.id);
   if (!novo && !Number.isFinite(id)) notFound();
-  const u = novo ? null : await q1<{ nome: string; usuario: string; email: string | null; perfil: string; ativo: boolean }>(
-    'SELECT nome, usuario, email, perfil, ativo FROM operadores WHERE id = $1 AND escritorio_id = $2', [id, s.esc]);
+  const u = novo ? null : await q1<{ nome: string; usuario: string; email: string | null; perfil: string; ativo: boolean; fin: boolean }>(
+    'SELECT nome, usuario, email, perfil, ativo, acesso_financeiro AS fin FROM operadores WHERE id = $1 AND escritorio_id = $2', [id, s.esc]);
   if (!novo && !u) notFound();
   return (
     <>
@@ -30,6 +30,14 @@ export default async function Usuario({ params }: { params: { id: string } }) {
         <label>{novo ? 'Senha inicial *' : 'Nova senha (deixe em branco para manter)'}</label>
         <input type="password" name="senha" autoComplete="new-password" minLength={8} required={novo} />
         <p className="desc">Mínimo de 8 caracteres, com letras e números. Oriente o usuário a trocar a senha em “Minha conta”.</p>
+        {s.fin && (
+          <>
+            <input type="hidden" name="fin_presente" value="1" />
+            <label style={{ display: 'flex', gap: 8, alignItems: 'center', color: 'var(--tx)' }}>
+              <input type="checkbox" name="acesso_financeiro" defaultChecked={u?.fin ?? false} style={{ width: 'auto' }} /> 💰 Acesso ao Módulo Financeiro
+            </label>
+          </>
+        )}
         <label style={{ display: 'flex', gap: 8, alignItems: 'center', color: 'var(--tx)' }}><input type="checkbox" name="ativo" defaultChecked={u ? u.ativo : true} style={{ width: 'auto' }} /> Acesso ativo</label>
         <button className="btn" style={{ marginTop: 16 }}>Salvar</button>
       </form>

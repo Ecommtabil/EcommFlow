@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { exigirGestor } from '@/lib/auth';
 import { q } from '@/lib/db';
 import { fmtData } from '@/lib/format';
-import { alternarRotina } from '@/app/actions/tarefas';
+import { alternarRotina, excluirRotina } from '@/app/actions/tarefas';
+import { BotaoConfirmar } from '@/components/BotaoConfirmar';
 
 export const metadata = { title: 'EcommFlow · Rotinas' };
 const SEM = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
@@ -44,7 +45,9 @@ export default async function Rotinas({ searchParams: sp }: { searchParams: { q?
               <td style={{ whiteSpace: 'nowrap' }}>
                 <Link className="btn sm gh" href={`/rotinas/${r.id}`}>✎ Editar</Link>{' '}
                 <form action={alternarRotina} className="inline"><input type="hidden" name="id" value={r.id} /><input type="hidden" name="back" value="/rotinas" />
-                  <button className="btn sm gh">{r.ativa ? '⏸ Pausar' : '▶ Retomar'}</button></form>
+                  <button className="btn sm gh">{r.ativa ? '⏸ Pausar' : '▶ Retomar'}</button></form>{' '}
+                <form action={excluirRotina} className="inline"><input type="hidden" name="id" value={r.id} /><input type="hidden" name="back" value="/rotinas" />
+                  <BotaoConfirmar title="Excluir rotina" mensagem={`Excluir a rotina "${r.titulo}"${r.cliente ? ` de ${r.cliente}` : ''}?\n\nAs tarefas em aberto serão removidas; as concluídas ficam no histórico.`}>🗑</BotaoConfirmar></form>
               </td>
             </tr>
           ))}

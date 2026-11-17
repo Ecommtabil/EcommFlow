@@ -9,6 +9,7 @@ export type Sessao = {
   perfil: 'gestor' | 'operador';
   esc: number;
   escNome: string;
+  fin: boolean; // acesso ao Módulo Financeiro
 };
 
 function chave() {
@@ -29,7 +30,7 @@ export async function verificar(token?: string): Promise<Sessao | null> {
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, chave());
-    return { id: payload.id as number, nome: payload.nome as string, perfil: payload.perfil as Sessao['perfil'], esc: payload.esc as number, escNome: payload.escNome as string };
+    return { id: payload.id as number, nome: payload.nome as string, perfil: payload.perfil as Sessao['perfil'], esc: payload.esc as number, escNome: payload.escNome as string, fin: payload.fin === true };
   } catch {
     return null;
   }
